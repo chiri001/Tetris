@@ -32,9 +32,9 @@ class Block:
         if self.rotation_state == len(self.cells):
             self.rotation_state = 0
 
-    def undo_rotaiton(self):
+    def undo_rotation(self):
         self.rotation_state -= 1
-        if(self.rotation_state == 0):
+        if(self.rotation_state == -1):
             self.rotation_state = len(self.cells) - 1
 
     

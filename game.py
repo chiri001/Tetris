@@ -87,6 +87,7 @@ class Game:
         self.next_block = self.get_random_block()
         self.score = 0
         self.game_over_sound_played = False
+        pygame.mixer.music.play(-1) # restart theme music
     
     def block_fits(self):
         tiles = self.current_block.get_cell_pos()

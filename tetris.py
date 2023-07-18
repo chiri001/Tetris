@@ -7,9 +7,13 @@ title_font = pygame.font.Font(None, 45)
 score_surface = title_font.render("Score", True, Color.white)
 next_surface = title_font.render("Next", True, Color.white)
 game_over_surface = title_font.render("GAME OVER!", True, Color.red)
+button_font = pygame.font.Font(None, 50)
+button_surface = button_font.render("RESTART", True, Color.white)
+
 
 score_rect = pygame.Rect(330, 55, 170, 60)
 next_rect = pygame.Rect(330, 215, 170, 180)
+button_rect = pygame.Rect(330, 520, 170, 40)
 
 # Defintions --> defines the variables needed
 
@@ -28,10 +32,13 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             SystemExit
-        if event.type == pygame.KEYDOWN:
-            if game.game_over == True:
+        elif event.type == pygame.MOUSEBUTTONDOWN and game.game_over:
+            mouse_pos = event.pos  # gets mouse position
+            if button_rect.collidepoint(mouse_pos):
                 game.game_over = False
                 game.reset()
+
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT and game.game_over == False:
                 game.move_left()
             if event.key == pygame.K_RIGHT and game.game_over == False:
@@ -55,6 +62,9 @@ while True:
     if game.game_over == True:
         game.play_game_over()
         screen.blit(game_over_surface, (320, 450, 50, 50))
+        pygame.draw.rect(screen, Color.green, button_rect, 0, 10)
+        screen.blit(button_surface, 
+                    button_surface.get_rect(center=button_rect.center))
     
     pygame.draw.rect(screen, Color.light_blue, score_rect, 0, 10)
     score_val_rect = score_val_surface.get_rect(centerx = score_rect.centerx,
