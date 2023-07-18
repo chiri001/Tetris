@@ -20,9 +20,66 @@ button_rect = pygame.Rect(330, 520, 170, 40)
 screen = pygame.display.set_mode((520, 620)) # width * height
 pygame.display.set_caption("Tetris") #Title
 clock = pygame.time.Clock() #control the speed of the game
-game = Game()
 GAME_UPDATE = pygame.USEREVENT #creates event triggered if blk pos needs update
-pygame.time.set_timer(GAME_UPDATE, 200)
+
+def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
+    # ic is inactive color, ac is active color
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if x + w > mouse[0] > x and y + h > mouse[1] > y: #check mouse is within rect
+        pygame.draw.rect(screen, ac, (x, y, w, h))
+        if click[0] == 1 and action is not None:
+            return action()   
+    else:
+        pygame.draw.rect(screen, ic, (x, y, w, h))
+    small_text = pygame.font.Font(None, 25)
+    text_surf, text_rect = text_objects(message, small_text)
+    text_rect.center = ((x + (w / 2)), (y + (h / 2)))
+    screen.blit(text_surf, text_rect)
+
+def text_objects(text, font):
+    text_surface = font.render(text, True, Color.white)
+    return text_surface, text_surface.get_rect()
+
+def easy_mode():
+    pygame.time.set_timer(GAME_UPDATE, 350)
+    return "easy"
+
+def medium_mode():
+    pygame.time.set_timer(GAME_UPDATE, 250)
+    return "medium"
+
+def hard_mode():
+    pygame.time.set_timer(GAME_UPDATE, 100)
+    return "hard"
+
+def main_menu():
+    menu = True
+    game_start = False
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                SystemExit
+
+        screen.fill(Color.dark_blue)
+        difficulty = None
+        difficulty = draw_button(screen, "Easy", 210, 200, 100, 50, Color.purple, Color.green, easy_mode)
+        difficulty = difficulty or draw_button(screen, "Medium", 210, 260, 100, 50, Color.purple, Color.green, medium_mode)
+        difficulty = difficulty or draw_button(screen, "Hard", 210, 320, 100, 50, Color.purple, Color.green, hard_mode)
+
+        if difficulty:
+            game_start = True
+            menu = False
+
+        pygame.display.update()
+        clock.tick(15)
+
+    return game_start
+
+game_start = main_menu()
+game = Game()
+
 
 # Game Loop --> updates the positions of game objects
 
